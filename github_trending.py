@@ -1,26 +1,37 @@
 import requests
 import json
+from datetime import date, timedelta
 
 
-def get_trending_repositories(top_size):
-    url = 'https://api.github.com/search/repositories?sort=stars&q=stars'
-    result = requests.get(url)
-    data = json.loads(result.text)
-    return data
+def get_trending_repositories(top_size, for_day_count):
+    start_date = date.today() - timedelta(days=for_day_count)
+    url = 'https://api.github.com/search/repositories'
+    params = {
+        'q': 'created:>={}'.format(start_date),
+        'sort': 'stars',
+        'order': 'desc',
+    }
+    response = requests.get(url, params)
+    return json.loads(response.text)['items'][:top_size]
 
 
-def get_open_issues_amount(repo_owner, repo_name):
-    url = 'https://api.github.com/repos/{owner}/{repo}/issues'.format(owner=repo_owner, repo=repo_name)
-    result = requests.get(url)
-    data = json.loads(result.text)
-    return data
+def show_repository_info(repository):
+    print('*' * 100)
+    print('''
+    Repository name: {name}
+    Repository owner: {owner}
+    Count open issues: {issues}
+    Repository url: {url}
+    '''.format(
+        name=repository['name'],
+        owner=repository['owner']['login'],
+        issues=repository['open_issues_count'],
+        url=repository['html_url']
+    ))
 
 if __name__ == '__main__':
-    data = get_trending_repositories(123)
-    for item in data['items']:
-        print('*'*100)
-        print('Name={name}:Owner={owner}:Issues={issues}:url={url}'.format(
-            name=item['name'], owner=item['owner']['login'], issues=item['open_issues_count'], url=item['html_url']
-        ))
-        data = get_open_issues_amount(item['owner']['id'], item['id'])
-        pass
+    TOP_SIZE = 20
+    DAY_COUNT = 7
+    repositories = get_trending_repositories(TOP_SIZE, DAY_COUNT)
+    for repository in repositories:
+        show_repository_info(repository)

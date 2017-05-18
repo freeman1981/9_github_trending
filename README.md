@@ -1,6 +1,10 @@
 # Github Trends
 
-[TODO. There will be project description]
+You should install requests. 
+
+pip3 install requests - better in virtual env.
+python3 github_trending.py
+will return 20 repositories for last week ordered by stars.
 
 # Project Goals
 
