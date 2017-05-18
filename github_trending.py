@@ -30,8 +30,8 @@ def show_repository_info(repository):
     ))
 
 if __name__ == '__main__':
-    TOP_SIZE = 20
-    DAY_COUNT = 7
-    repositories = get_trending_repositories(TOP_SIZE, DAY_COUNT)
+    top_size = 20
+    day_count = 7
+    repositories = get_trending_repositories(top_size, day_count)
     for repository in repositories:
         show_repository_info(repository)
