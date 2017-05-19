@@ -1,5 +1,4 @@
 import requests
-import json
 from datetime import date, timedelta
 
 
@@ -10,9 +9,10 @@ def get_trending_repositories(top_size, for_day_count):
         'q': 'created:>={}'.format(start_date),
         'sort': 'stars',
         'order': 'desc',
+        'per_page': top_size
     }
-    response = requests.get(url, params)
-    return json.loads(response.text)['items'][:top_size]
+    response_dict = requests.get(url, params).json()
+    return response_dict['items']
 
 
 def show_repository_info(repository):
